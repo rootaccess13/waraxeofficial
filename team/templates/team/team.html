@@ -1,0 +1,5 @@
+{% for teams in team %}
+  <ul>
+    <li><a href="{{ teams.get_absolute_url }}">{{ teams.team_name }}</a></li>
+  </ul>
+{% endfor %}
