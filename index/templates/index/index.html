@@ -1240,7 +1240,7 @@ input[type="radio"], input[type="checkbox"] {
     form.addEventListener('submit', function(e){
     e.preventDefault()
     console.log('Form submitted')
-    var url = 'http://127.0.0.1:8000/api/v1/bets/'
+    var url = window.location + '/api/v1/bets/'
     var bet_amount = document.getElementById('bet_field').value;
     var picked1 = document.getElementsByName('team1');
     var picked2 = document.getElementsByName('team2');
