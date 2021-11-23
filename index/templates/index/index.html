@@ -1161,8 +1161,9 @@ input[type="radio"], input[type="checkbox"] {
 		    return cookieValue;
 		}
     async function get_resources(team1_id, team2_id) {
-      url = 'http://127.0.0.1:8000/api/v1/teams/' + team1_id
-      url2 = 'http://127.0.0.1:8000/api/v1/teams/' + team2_id
+
+      url = window.location + 'api/v1/teams/' + team1_id
+      url2 = window.location + 'api/v1/teams/' + team2_id
       await axios.get(url)
       .then(function (response) {
         image = response['data']['logo'];
