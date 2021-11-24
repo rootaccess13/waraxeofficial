@@ -14,7 +14,7 @@
     <link rel="shortcut icon" href="{% static 'assets/images/icons/WarAxe_icon.ico' %}" />
     <script src="https://www.paypalobjects.com/api/checkout.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cleave.js/1.0.2/cleave.min.js" integrity="sha512-SvgzybymTn9KvnNGu0HxXiGoNeOi0TTK7viiG0EGn2Qbeu/NFi3JdWrJs2JHiGA1Lph+dxiDv5F9gDlcgBzjfA==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
   </head>
   <style>
     @import url('https://fonts.googleapis.com/css2?family=Courier+Prime&display=swap');
@@ -506,6 +506,9 @@ input[type="radio"], input[type="checkbox"] {
 .modal-title {
   color: floralwhite;
 }
+.modal-content {
+  background-color: #232122;
+}
   </style>
 
   <body class="sidebar-icon-only">
@@ -627,7 +630,7 @@ input[type="radio"], input[type="checkbox"] {
                               <tr>
                                 
                                   <td scope="row">
-                                    <img src="{{data.pick.logo.url}}"  alt="Sheep">
+                                    <img src="{{data.pick.logo}}"  alt="Sheep">
                                     <!-- </span> {{data.pick}} -->
                                   </td>
                                   
@@ -676,10 +679,15 @@ input[type="radio"], input[type="checkbox"] {
       <div class="container-fluid page-body-wrapper">
         <nav class="sidebar sidebar-offcanvas" id="sidebar" >
           <ul class="nav">
+            <li class="nav-item mt-2">
+              <a class="nav-link" href="">
+                <img src="https://i.imgur.com/SAWg0Y6.png" class="img-fluid img-thumbnail" alt="Teams"></a>
+            </li>
+            <hr>
             {% for t in team_list %}
             <li class="nav-item">
               <a class="nav-link" href="{{ t.get_absolute_url }}">
-                <img src="{{ t.logo.url }}" class="img-fluid img-thumbnail" alt="Teams"></a>
+                <img src="{{ t.logo }}" class="img-fluid img-thumbnail" alt="Teams"></a>
             </li>
             {% endfor %}
           </ul>
@@ -868,7 +876,7 @@ input[type="radio"], input[type="checkbox"] {
                                       {% for data in history %}
                                       <tbody>
                                           <tr>
-                                              <td scope="row"> <img src="{{logo}}"  alt="Sheep"></span> {{data.pick}} </td>
+                                              <td scope="row"> <img src="{{data.pick.logo.url}}"  alt="Sheep"></span> {{data.pick}} </td>
                                               <td><span>{{data.status}}</span></td>
                                               <td class="text-muted">{{ data.time }}</td>
                                               <td class="d-flex justify-content-end align-items-center"> <span class="fa fa-long-arrow-up mr-1"></span> {{ data.amount }} </td>
@@ -1036,25 +1044,38 @@ input[type="radio"], input[type="checkbox"] {
                         </div>
                       </div>
                     </div>
+                    <div class="modal fade" id="collab" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+                      <div class="modal-dialog modal-dialog-centered modal-xl">
+                        <div class="modal-content">
+                          <div class="modal-header">
+                            <h5 class="modal-title" id="staticBackdropLabel">Collaboration Merch</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                          </div>
+                          <div class="container">
+                            <img src="https://i.imgur.com/HOQKZTA.png" class="img-fluid">
+                      </div>
+                    </div>
+                    </div>
+                    </div>
                     {% for team in upcoming %}
                     <div class="col-md-6">
                     <div class="card card-1">
-                      <table class="table" id="matches">
+                      <table class="table" id="{{team.id}}">
                         <thead>
                           <tr>
                             <th scope="col">Matches</th>
                             <th scope="col">Bet</th>
                           </tr>
                         </thead>
-                        <tbody id="myTable">
+                        <tbody id="{{team.id}}">
                           <tr>
                             <td class="w-3">
-                              <img src="{{ team.team_1.logo.url }}" class="teamOne" id="{{ team.team_1.id }}" alt="Sheep">
+                              <img src="{{ team.team_1.logo }}" class="{{team.id}}" id="{{ team.team_1.id }}" alt="{{team.team_1.team_name}}">
                               <span class="p-2">vs</span>
-                              <img src="{{ team.team_2.logo.url }}" class="teamTwo" name="{{team.id}}" id="{{ team.team_2.id }}" alt="">
+                              <img src="{{ team.team_2.logo }}" class="{{team.id}}" id="{{ team.team_2.id }}" alt="{{team.team_2.team_name}}">
                             </td>
                             <td>
-                              <button class="btn btn-sm btn-secondary" type="submit" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="get_resources({{team.team_1.id}},{{team.team_2.id}})">Bet</button>
+                              <button class="btn btn-sm btn-secondary" type="submit" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="get_resources({{team.team_1.id}},{{team.team_2.id}},{{team.id}})">Bet</button>
                             </td>
                           </tr>
                           
@@ -1143,6 +1164,7 @@ input[type="radio"], input[type="checkbox"] {
         </div>
       </div>
     </div>
+  
     <script>
 
       function getCookie(name) {
@@ -1160,10 +1182,11 @@ input[type="radio"], input[type="checkbox"] {
 		    }
 		    return cookieValue;
 		}
-    async function get_resources(team1_id, team2_id) {
+    async function get_resources(team1_id, team2_id, match_id){
 
-      url = window.location + 'api/v1/teams/' + team1_id
-      url2 = window.location + 'api/v1/teams/' + team2_id
+      var url = window.location + 'api/v1/teams/' + team1_id
+      var url2 = window.location + 'api/v1/teams/' + team2_id
+      var _id = 
       await axios.get(url)
       .then(function (response) {
         image = response['data']['logo'];
@@ -1191,6 +1214,7 @@ input[type="radio"], input[type="checkbox"] {
               'X-CSRFTOKEN': csrftoken,
           }
       })
+
     }
 
     function authtrigger(){
@@ -1235,6 +1259,7 @@ input[type="radio"], input[type="checkbox"] {
       }
   }
 
+
 		var csrftoken = getCookie('csrftoken');
     var form = document.getElementById('form-wrapper')
     form.addEventListener('submit', function(e){
@@ -1246,12 +1271,13 @@ input[type="radio"], input[type="checkbox"] {
     var picked2 = document.getElementsByName('team2');
     var d = getCheckedValue(picked1, picked2);
     var match_id = document.getElementById(d);
+
     axios.post(url, {
-      better: parseInt("1"),
+      better: {{id | escapejs}},
       matches: "1",
       pick: d,
       amount: bet_amount,
-      status: "Win"
+      status: "Ongoing"
     },{
       headers:{
                 'X-CSRFTOKEN': csrftoken,
@@ -1262,7 +1288,7 @@ input[type="radio"], input[type="checkbox"] {
         betPlace()
     })
     .catch(function (error) {
-        console.log(match_id);
+        console.log(match_id.className);
     });
   })
 
@@ -1275,11 +1301,14 @@ input[type="radio"], input[type="checkbox"] {
         numeralThousandsGroupStyle: 'thousand'
       });
     </script>
-
+<script type="text/javascript">
+  $(window).on('load', function() {
+        $('#collab').modal('show');
+    });
+</script>
     </script>
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="{% static 'assets/js/core.js' %}"></script>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{% static 'assets/vendors/js/vendor.bundle.base.js' %}"></script>
     <script src="{% static 'assets/vendors/chart.js/Chart.min.js' %}"></script>
     <script src="{% static 'assets/js/off-canvas.js' %}"></script>

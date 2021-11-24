@@ -33,7 +33,8 @@ def index(request):
         'average': ave['amount__sum'],
         'income': income['amount__sum'],
         'symbol': symbol,
-        'team_list': team_list
+        'team_list': team_list,
+        'id': id,
     }
 
     return render(request, 'index/index.html', context)

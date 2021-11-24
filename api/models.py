@@ -12,7 +12,8 @@ import uuid
 #Team Models
 class TeamModel(models.Model):
     team_name = models.CharField(verbose_name="Team", max_length=200)
-    logo = models.ImageField(upload_to="teams")
+    # logo = models.ImageField(upload_to="teams")
+    logo = models.URLField(verbose_name="Team Logo", max_length=200)
     def __str__(self):
         return self.team_name
 

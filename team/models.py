@@ -4,7 +4,8 @@ from django.urls import reverse
 import uuid
 class Team(models.Model):
     team_name = models.CharField(max_length=255)
-    logo = models.ImageField(upload_to="team")
+    # logo = models.ImageField(upload_to="team")
+    logo = models.URLField(max_length=255, verbose_name="Logo URL")
     description = models.CharField(verbose_name="Team Descriptions", max_length=255, default="")
     slug = models.SlugField(null=False, unique=True)
     # id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, null=False, unique=True)
@@ -18,7 +19,8 @@ class Team(models.Model):
 class Member(models.Model):
     name = models.CharField(max_length=100, unique=True, null=False, blank=True, default="")
     team = models.ForeignKey(Team, verbose_name="Team", on_delete=PROTECT)
-    avatar = models.ImageField(upload_to="member")
+    # avatar = models.ImageField(upload_to="member")
+    avatar = models.URLField(max_length=255, verbose_name="Avatar URL")
     description =models.CharField(max_length=255, default="")
     slug = models.SlugField(null=False, unique=True, default="")
     def __str__(self):
